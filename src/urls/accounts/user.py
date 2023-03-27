@@ -4,5 +4,5 @@ from src.services.accounts import user
 
 
 urlpatterns = [
-    path('', user.index)
+    path('v1/user/', user.index)
 ]

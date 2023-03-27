@@ -3,12 +3,14 @@ version: "3.9"
 services:
   backend:
     platform: linux/amd64
-    build: ..
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile
     volumes:
       - static-volume:/app/static/
-      - .:/app
+      - ..:/app
     env_file:
-      - .env
+      - ../.env
     ports:
       - "8000:8000"
     depends_on:
@@ -33,7 +35,7 @@ services:
     image: nginx:latest
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
-      - static-volume:/data/static
+      - static-volume:/app/static
     ports:
       - "80:80"
     depends_on:
