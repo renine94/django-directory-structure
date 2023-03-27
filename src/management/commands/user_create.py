@@ -1,5 +1,0 @@
-
-
-
-class Command(BaseCommand):
-    pass
