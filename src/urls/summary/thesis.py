@@ -6,8 +6,8 @@ from src.services.summary import thesis
 
 
 router = DefaultRouter()
-router.register('thesis', thesis.ThesisAPI, basename='thesis')
+router.register('', thesis.ThesisAPI, basename='thesis')
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('thesis', include(router.urls)),
 ]

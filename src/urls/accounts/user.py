@@ -7,11 +7,11 @@ from src.services.accounts import user
 
 
 router = DefaultRouter()
-router.register('user', user.UserAPI, basename='user')
+router.register('', user.UserAPI, basename='user')
 
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('user', include(router.urls)),
     path('login/', user.MyTokenObtainPairView.as_view(), name='login'),
     path('login/refresh/', TokenRefreshView.as_view(), name='login-refresh'),
     path('logout/', user.LogoutView.as_view(), name='logout'),
