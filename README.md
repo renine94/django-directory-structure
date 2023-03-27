@@ -1,0 +1,1 @@
+# Django Project 구조 샘플
