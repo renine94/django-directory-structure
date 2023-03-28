@@ -10,7 +10,7 @@ class UserTestCase(APITestCase):
     def test_회원가입_성공(self):
         """회원가입"""
         # Given
-        url = reverse('accounts:user-list')
+        url = reverse('src:user-list')
         data = {'username': 'testuser01', 'password': 'qwer1234!', 'password2': 'qwer1234!'}
         # When
         res = self.client.post(url, data, format='json')
@@ -20,7 +20,7 @@ class UserTestCase(APITestCase):
     def test_회원가입_실패(self):
         """회원가입시, 비밀번호를 서로 다르게 입력"""
         # Given
-        url = reverse('accounts:user-list')
+        url = reverse('src:user-list')
         data = {'username': 'testuser01', 'password': 'qwer1234!', 'password2': 'qwer1234'}
         # When
         res = self.client.post(url, data, format='json')
@@ -31,7 +31,7 @@ class UserTestCase(APITestCase):
     def test_회원조회(self):
         """회원 목록 조회"""
         # Given
-        url = reverse('accounts:user-list')
+        url = reverse('src:user-list')
         self.test_회원가입_성공()
         # When
         res = self.client.get(url)
@@ -42,7 +42,7 @@ class UserTestCase(APITestCase):
     def test_로그인(self):
         """로그인하면 토큰 획득"""
         # Given
-        url = reverse('accounts:login')
+        url = reverse('src:login')
         self.test_회원가입_성공()
         login_data = {'username': 'testuser01', 'password': 'qwer1234!'}
         # When
@@ -53,8 +53,8 @@ class UserTestCase(APITestCase):
     def test_로그아웃(self):
         """회원가입후, 로그인하여 refresh 토큰 획득후 로그아웃하여 블랙리스트에 등록"""
         # Given
-        login_url = reverse('accounts:login')
-        logout_url = reverse('accounts:logout')
+        login_url = reverse('src:login')
+        logout_url = reverse('src:logout')
 
         self.test_회원가입_성공()
         login_data = {'username': 'testuser01', 'password': 'qwer1234!'}
@@ -73,10 +73,10 @@ class UserTestCase(APITestCase):
         # Given
         self.test_회원가입_성공()
         login_data = {'username': 'testuser01', 'password': 'qwer1234!'}
-        res = self.client.post(reverse('accounts:login'), login_data)
+        res = self.client.post(reverse('src:login'), login_data)
         headers = {'HTTP_AUTHORIZATION': f'Bearer {res.data["access"]}'}
 
-        delete_url = reverse('accounts:user-list') + '1/'
+        delete_url = reverse('src:user-list') + '1/'
         # When
         res = self.client.delete(delete_url, **headers)
         # Then

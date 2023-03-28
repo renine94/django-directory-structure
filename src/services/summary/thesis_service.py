@@ -42,6 +42,14 @@ class ThesisAPI(mixins.CreateModelMixin,
         qs = super().get_queryset()
         return qs.filter(user=self.request.user.id)
 
+    def list(self, request, *args, **kwargs):
+        """회원목록 리턴"""
+        return super().list(request, *args, **kwargs)
+
+    def retrieve(self, request, *args, **kwargs):
+        """단일 회원 목록 리턴"""
+        return super().retrieve(request, *args, **kwargs)
+
     def create(self, request, *args, **kwargs):
         """논문 생성 및 기존에 이미 요청했으면 바로 리턴"""
         user: User = request.user

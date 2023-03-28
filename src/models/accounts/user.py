@@ -15,6 +15,10 @@ class User(AbstractUser):
     token_count = models.PositiveSmallIntegerField(default=1, validators=[MaxValueValidator(3)])
     token_updated_at = models.DateTimeField(default=timezone.now, help_text='토큰 업데이트 시간')
 
+    class Meta:
+        ordering = ['-pk']
+
+
     def increase_token(self) -> bool:
         """하루 한번 토큰 1 증가 로직"""
         if self.token_count >= 3:

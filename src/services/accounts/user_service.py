@@ -14,9 +14,6 @@ from src.models.accounts.user import User
 from src.serializers.accounts.user import UserSerializer
 
 
-# Create your views here.
-
-
 class UserAPI(ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer

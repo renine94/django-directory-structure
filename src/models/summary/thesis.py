@@ -8,3 +8,6 @@ class Thesis(models.Model):
     content = models.TextField('논문 요약 내용', blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        ordering = ['-pk']
