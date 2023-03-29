@@ -25,10 +25,6 @@ router_v2.register('user', user_service.UserAPI, basename='user')
 
 app_name = 'src'
 urlpatterns = [
-    path('v1/user/login/', user_service.MyTokenObtainPairView.as_view(), name='login'),
-    path('v1/user/login/refresh/', TokenRefreshView.as_view(), name='login-refresh'),
-    path('v1/user/logout/', user_service.LogoutView.as_view(), name='logout'),
-
     path('v1/', include(router_v1.urls)),
     path('v2/', include(router_v2.urls)),
 ]

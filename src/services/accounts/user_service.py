@@ -1,17 +1,25 @@
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth import authenticate
-from rest_framework import status
 
+from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
+from rest_framework.decorators import action
 
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
+from rest_framework_simplejwt.serializers import TokenRefreshSerializer
+from rest_framework_simplejwt.exceptions import InvalidToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
+
+from drf_yasg.utils import swagger_auto_schema
 
 from src.models.accounts.user import User
 from src.serializers.accounts.user import UserSerializer
+from src.serializers.accounts.user import TokenSerializer
 
 
 class UserAPI(ModelViewSet):
@@ -30,28 +38,40 @@ class UserAPI(ModelViewSet):
         instance.is_active = False
         instance.save()
 
-
-class MyTokenObtainPairView(TokenObtainPairView):
-
-    def post(self, request, *args, **kwargs):
+    @swagger_auto_schema(responses={200: TokenSerializer})
+    @action(detail=False, methods=['post'], serializer_class=TokenObtainPairSerializer)
+    def login(self, request):
         """Login"""
         user = authenticate(username=request.data['username'], password=request.data['password'])
         if user:
             user.increase_token()
-        return super().post(request, *args, **kwargs)
 
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
 
-class LogoutView(APIView):
-    permission_classes = (IsAuthenticated,)
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
-    def post(self, request):
+    @action(detail=False, methods=['post'], url_path='login-refresh', serializer_class=TokenRefreshSerializer)
+    def login_refresh(self, request):
+        """로그인 갱신"""
+        serializer = self.get_serializer(data=request.data)
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as e:
+            raise InvalidToken(e.args[0])
+
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
+
+    @action(detail=False, methods=['post'], authentication_classes=(JWTAuthentication, ), permission_classes=(IsAuthenticated,))
+    def logout(self, request):
         """로그아웃 (refresh token 차단)"""
         try:
             refresh_token = request.data["refresh"]
             token = RefreshToken(refresh_token)
             token.blacklist()
-
             return Response(status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
-            print(e)
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            return Response({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)

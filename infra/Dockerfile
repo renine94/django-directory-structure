@@ -8,7 +8,7 @@ COPY ..  ./
 
 RUN pip install -r requirements/prod.txt
 
-RUN python manage.py test  --settings=core.settings.test
+RUN python manage.py test  --settings=core.settings.test --parallel
 
 # --max-requests 1000 --max-requests-jitter 150 -w $NUM_CORES -k gevent
 CMD sh -c "python manage.py makemigrations --noinput \

@@ -19,3 +19,8 @@ class UserSerializer(serializers.ModelSerializer):
         if data['password'] != data['password2']:
             raise ValidationError('password 가 같은지 다시 확인부탁드립니다.')
         return data
+
+
+class TokenSerializer(serializers.Serializer):
+    access = serializers.CharField()
+    refresh = serializers.CharField()

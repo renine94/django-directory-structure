@@ -21,7 +21,7 @@ class UserTestCase(APITestCase):
         """회원가입시, 비밀번호를 서로 다르게 입력"""
         # Given
         url = reverse('src:user-list')
-        data = {'username': 'testuser01', 'password': 'qwer1234!', 'password2': 'qwer1234'}
+        data = {'username': 'testuser01', 'password': 'qwer1234!!', 'password2': 'qwer1234@@'}
         # When
         res = self.client.post(url, data, format='json')
         # Then
