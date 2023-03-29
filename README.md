@@ -1,5 +1,5 @@
 # 코드 실행
-1. `docker-compose up -d`
+1. `docker-compose -f infra/docker-compose.yml up -d`
    - 실행전, 본인 로컬에서 8000, 5432, 6379, 80번 포트 사용중인걸 모두 종료해주세요.
 
 # .env
