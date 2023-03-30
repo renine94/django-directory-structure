@@ -37,17 +37,16 @@ class ThesisAPI(mixins.CreateModelMixin,
             permission_classes = [IsAuthenticated]
         return [permission() for permission in permission_classes]
 
-    def get_queryset(self):
-        """내가 요청한 요약논문만 가져오기"""
-        qs = super().get_queryset()
-        return qs.filter(user=self.request.user.id)
+    def filter_queryset(self, queryset):
+        queryset = super().filter_queryset(queryset)
+        return queryset.filter(user=self.request.user.id)
 
     def list(self, request, *args, **kwargs):
-        """회원목록 리턴"""
+        """논문 목록 조회"""
         return super().list(request, *args, **kwargs)
 
     def retrieve(self, request, *args, **kwargs):
-        """단일 회원 목록 리턴"""
+        """논문 단일 조회"""
         return super().retrieve(request, *args, **kwargs)
 
     def create(self, request, *args, **kwargs):

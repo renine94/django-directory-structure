@@ -19,3 +19,22 @@ DATABASES = {
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+        # 로컬 메모리 캐시 보는방법
+        # from django.core.cache.backends import locmem
+        # print(locmem._caches)
+    },
+    # "default": {
+    #     "BACKEND": "django_redis.cache.RedisCache",
+    #     "LOCATION": os.getenv('REDIS_HOST'),
+    #     "OPTIONS": {
+    #         "CLIENT_CLASS": "django_redis.client.DefaultClient",
+    #     }
+    # }
+}
+
+print(DATABASES)
+print(CACHES)

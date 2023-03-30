@@ -1,11 +1,13 @@
 from django.contrib.auth import get_user_model
 
-from rest_framework.permissions import BasePermission, SAFE_METHODS
+from rest_framework.permissions import BasePermission
+from rest_framework.permissions import SAFE_METHODS
+from rest_framework.permissions import IsAuthenticated
 
 from src.models import User
 
 
-class IsOwnerOnly(BasePermission):
+class IsOwnerOnly(IsAuthenticated):
 
     def has_object_permission(self, request, view, obj):
         if request.user.is_authenticated:
@@ -15,3 +17,7 @@ class IsOwnerOnly(BasePermission):
                 return obj == request.user
             return obj.user == request.user
         return False
+
+    def has_permission(self, request, view):
+        return super().has_permission(request, view)
+
