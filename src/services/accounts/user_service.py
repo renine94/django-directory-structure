@@ -14,12 +14,14 @@ from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.serializers import TokenRefreshSerializer
 from rest_framework_simplejwt.exceptions import InvalidToken
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.exceptions import TokenError
 
 from drf_yasg.utils import swagger_auto_schema
 
 from src.models.accounts.user import User
 from src.serializers.accounts.user import UserSerializer
 from src.serializers.accounts.user import TokenSerializer
+from src.permissions import IsOwnerOnly
 
 
 class UserAPI(ModelViewSet):
@@ -28,10 +30,26 @@ class UserAPI(ModelViewSet):
     authentication_classes = ()
     permission_classes = ()
 
+    def get_authenticators(self):
+        if self.request.method == 'DELETE':
+            return [JWTAuthentication()]
+        return [auth() for auth in self.authentication_classes]
+
+    def get_permissions(self):
+        """삭제는 staff 거나 나 자신만"""
+        if self.action == 'destroy':
+            permission_classes = [IsOwnerOnly]
+        else:
+            permission_classes = []
+        return [permission() for permission in permission_classes]
+
     def perform_create(self, serializer):
         password = serializer.validated_data.pop('password2')
         serializer.validated_data['password'] = make_password(password)
         super().perform_create(serializer)
+
+    def destroy(self, request, *args, **kwargs):
+        return super().destroy(request, *args, **kwargs)
 
     def perform_destroy(self, instance: User) -> None:
         """회원탈퇴 오버라이딩, 실제 DB삭제처리 않고 soft-delete 처리"""
@@ -72,6 +90,6 @@ class UserAPI(ModelViewSet):
             refresh_token = request.data["refresh"]
             token = RefreshToken(refresh_token)
             token.blacklist()
-            return Response(status=status.HTTP_205_RESET_CONTENT)
+            return Response({'message': 'logout success!'}, status=status.HTTP_205_RESET_CONTENT)
         except Exception as e:
             return Response({'message': str(e)}, status=status.HTTP_400_BAD_REQUEST)
