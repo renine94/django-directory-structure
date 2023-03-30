@@ -15,12 +15,12 @@ from src.services.accounts import user_service
 
 
 router_v1 = DefaultRouter()
-router_v1.register('user', user_service.UserAPI, basename='user')
-router_v1.register('thesis', thesis_service.ThesisAPI, basename='thesis')
+router_v1.register('user', user_service.UserAPI, basename='user_v1')
+router_v1.register('thesis', thesis_service.ThesisAPI, basename='thesis_v1')
 
 # Test 용도
 router_v2 = DefaultRouter()
-router_v2.register('user', user_service.UserAPI, basename='user')
+router_v2.register('user', user_service.UserAPI, basename='user_v2')
 
 
 app_name = 'src'
