@@ -4,6 +4,12 @@
 run:
 	@python manage.py runserver
 
+run_prod:
+	@python manage.py makemigrations --noinput \
+		&& python manage.py migrate --noinput \
+		&& python manage.py collectstatic --noinput \
+		&& gunicorn core.wsgi --bind 0.0.0.0:8000
+
 ##################################################################
 # Test (https://docs.djangoproject.com/en/3.2/topics/testing/overview/)
 ##################################################################
